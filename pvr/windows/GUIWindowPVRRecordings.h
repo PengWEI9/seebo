@@ -1,0 +1,78 @@
+#pragma once
+
+/*
+ *      Copyright (C) 2012-2013 Team XBMC
+ *      http://xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
+ *
+ */
+
+#include "GUIWindowPVRCommon.h"
+#include "video/VideoThumbLoader.h"
+#include "video/VideoDatabase.h"
+#include "utils/Observer.h"
+
+namespace PVR
+{
+  class CGUIWindowPVR;
+
+  class CGUIWindowPVRRecordings : public CGUIWindowPVRCommon, private Observer
+  {
+    friend class CGUIWindowPVR;
+
+  public:
+    CGUIWindowPVRRecordings(CGUIWindowPVR *parent);
+    virtual ~CGUIWindowPVRRecordings(void) {};
+
+    static CStdString GetResumeString(const CFileItem& item);
+
+    void GetContextButtons(int itemNumber, CContextButtons &buttons) const;
+    bool OnAction(const CAction &action);
+    bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
+    void OnWindowUnload(void);
+    void UpdateData(bool bUpdateSelectedFile = true);
+    void Notify(const Observable &obs, const ObservableMessage msg);
+    void UnregisterObservers(void);
+    void ResetObservers(void);
+
+  protected:
+    virtual void BeforeUpdate(const CStdString &strDirectory);
+    virtual void AfterUpdate(CFileItemList& items);
+
+  private:
+    bool OnClickButton(CGUIMessage &message);
+    bool OnClickList(CGUIMessage &message);
+
+    bool OnContextButtonDelete(CFileItem *item, CONTEXT_BUTTON button);
+    bool OnContextButtonInfo(CFileItem *item, CONTEXT_BUTTON button);
+    bool OnContextButtonPlay(CFileItem *item, CONTEXT_BUTTON button);
+    bool OnContextButtonRename(CFileItem *item, CONTEXT_BUTTON button);
+    bool OnContextButtonMarkWatched(const CFileItemPtr &item, CONTEXT_BUTTON button);
+    //TBIRD-STAN 1.3.5 MODS - START
+    //TBIRD 1.3.4 MODS - START
+    /*bool OnContextButtonUser1(CFileItem *item, CONTEXT_BUTTON button);
+    bool OnContextButtonUser2(CFileItem *item, CONTEXT_BUTTON button);
+    bool OnContextButtonUser3(CFileItem *item, CONTEXT_BUTTON button);
+    bool OnContextButtonUser4(CFileItem *item, CONTEXT_BUTTON button);
+    bool OnContextButtonUser5(CFileItem *item, CONTEXT_BUTTON button);*/
+    //TBIRD 1.3.4 MODS - FINISH
+    //TBIRD-STAN 1.3.5 MODS - START
+
+    CStdString m_strSelectedPath;
+    CVideoThumbLoader m_thumbLoader;
+    CVideoDatabase m_database;
+  };
+}
